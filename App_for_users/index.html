@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f3f6f3">
+    <meta name="description" content="Canvas Companion — um acompanhante local para seus cursos Canvas e ferramentas de IA.">
+    <title>Canvas Companion</title>
+    <script>
+      try {
+        const savedTheme = localStorage.getItem("puc-theme");
+        document.documentElement.dataset.theme = savedTheme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      } catch (_) {}
+    </script>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="sidebar">
+        <a class="brand" href="#" data-view="home"><span class="brand-mark">c</span><span>canvas<small>companion</small></span></a>
+        <div class="nav-caption">SEU ESPAÇO</div>
+        <nav id="navigation">
+          <button class="nav active" data-view="home"><i>⌂</i>Visão geral</button>
+          <button class="nav" data-view="courses"><i>▤</i>Cursos e atividades</button>
+          <button class="nav" data-view="library"><i>◇</i>Arquivos e materiais</button>
+          <button class="nav" data-view="assistant"><i>✳</i>Assistente de estudos</button>
+          <button class="nav" data-view="automation"><i>↻</i>Automações</button>
+          <button class="nav" data-view="runs"><i>◔</i>Execuções<span class="nav-badge" id="runs-badge" hidden></span></button>
+        </nav>
+        <div class="nav-caption second-caption">PREFERÊNCIAS</div>
+        <nav><button class="nav" data-view="settings"><i>⚙</i>Conexões e modelos</button></nav>
+        <div class="sidebar-bottom">
+          <div class="private-note"><span>⌑</span><div><b>Executado no seu computador</b><small>Tokens ficam locais; IA remota recebe os trechos enviados.</small></div></div>
+          <div class="version">Canvas Companion</div>
+        </div>
+      </aside>
+      <main class="main">
+        <header class="topbar"><div class="crumb">Canvas Companion <span>/</span> <b id="crumb-title">Visão geral</b></div><div class="top-actions"><button id="run-chip" class="run-chip" type="button" hidden></button><span class="connection" id="connection-state"><i></i>Conferindo conexão</span><button id="theme-toggle" class="theme-toggle" type="button" aria-label="Ativar modo noturno" title="Ativar modo noturno"><span aria-hidden="true">☾</span></button><button id="help" class="help" title="Privacidade e segurança" aria-label="Privacidade e segurança">?</button><button id="exit-app" class="exit-app" type="button" title="Encerrar aplicativo" aria-label="Encerrar aplicativo"><span aria-hidden="true">⏻</span><span class="exit-label">Encerrar app</span></button></div></header>
+        <section id="content" class="content"><div class="loading"><span class="spinner"></span><p>Preparando seu espaço…</p></div></section>
+        <footer class="footer"><span>Canvas Companion</span><span>As automações não enviam atividades ao Canvas.</span></footer>
+      </main>
+    </div>
+    <div id="modal"></div>
+    <div id="toasts" aria-live="polite"></div>
+    <script src="./app.js" defer></script>
+  </body>
+</html>
