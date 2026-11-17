@@ -638,6 +638,10 @@
   }
   async function exitApplication() {
     if (!window.confirm("Encerrar o Canvas Companion? A janela local será fechada.")) return;
+    if (window.desktopApp && typeof window.desktopApp.close === "function") {
+      window.desktopApp.close();
+      return;
+    }
     const button = document.getElementById("exit-app");
     if (button) button.disabled = true;
     try {

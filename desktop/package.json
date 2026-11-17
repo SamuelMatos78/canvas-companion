@@ -1,0 +1,80 @@
+{
+  "name": "canvas-companion-desktop",
+  "version": "0.5.1",
+  "description": "Canvas Companion para Windows e Linux",
+  "author": "Samuel Matos",
+  "license": "UNLICENSED",
+  "main": "main.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SamuelMatos78/canvas-companion.git"
+  },
+  "scripts": {
+    "start": "electron .",
+    "build:backend": "python ../preparos/build_executable.py",
+    "dist:win": "npm run build:backend && electron-builder --win nsis --publish never",
+    "dist:linux": "npm run build:backend && electron-builder --linux AppImage --publish never"
+  },
+  "dependencies": {
+    "electron-updater": "6.8.12"
+  },
+  "devDependencies": {
+    "electron": "^45.3.3",
+    "electron-builder": "^26.18.0"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "build": {
+    "appId": "dev.samuelmatos.canvascompanion",
+    "productName": "Canvas Companion",
+    "asar": true,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "../dist/executables",
+        "to": "backend",
+        "filter": [
+          "Canvas-Companion",
+          "Canvas-Companion.exe"
+        ]
+      }
+    ],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "SamuelMatos78",
+        "repo": "canvas-companion",
+        "releaseType": "release"
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "artifactName": "Canvas-Companion-${version}-Windows-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Canvas Companion"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Education",
+      "artifactName": "Canvas-Companion-${version}-Linux-${arch}.${ext}"
+    }
+  }
+}

@@ -1,6 +1,8 @@
 venv
 .build*
 __pycache__/
+desktop/node_modules/
+desktop/release/
 *.py[cod]
 *$py.class
 dist/

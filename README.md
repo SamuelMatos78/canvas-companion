@@ -5,10 +5,12 @@
 O Canvas Companion em App_for_users/ oferece uma interface local com modo
 noturno, configuração guiada do Canvas, escolha de provedor de IA, busca de
 arquivos e atividades, automações e validade local de seis meses por curso. O
-projeto gera executáveis standalone para Windows e Linux, além dos instaladores
-de fonte e de um ZIP enxuto para publicar o código no Google Drive. O arquivo
-`dist/canvas-companion-source.zip` pode ser enviado a alguém no Windows para compilar
-o `.exe`; os passos estão em App_for_users/README.md.
+app desktop Electron abre a interface numa janela própria, inclui o backend
+Python e verifica atualizações publicadas no GitHub Releases. Os builds Windows
+e Linux são gerados pelo workflow de release ao enviar uma tag `v*`. Também
+continuam disponíveis executáveis standalone PyInstaller, instaladores de fonte
+e um ZIP enxuto para publicar o código no Google Drive. Os passos estão em
+App_for_users/README.md.
 
 O projeto sincroniza materiais e atividades do Canvas, cria uma area limpa para
 pratica e, quando uma LLM OpenAI-compatible estiver disponivel, gera uma

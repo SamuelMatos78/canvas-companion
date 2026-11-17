@@ -33,6 +33,13 @@ def _positive_int(value: str) -> int:
     return parsed
 
 
+def _port_number(value: str) -> int:
+    parsed = int(value)
+    if not 0 <= parsed <= 65535:
+        raise argparse.ArgumentTypeError("informe uma porta entre 0 e 65535")
+    return parsed
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Consulta e executa pelo terminal todas as automacoes do Canvas Companion."
@@ -43,7 +50,9 @@ def build_parser() -> argparse.ArgumentParser:
     status.add_argument("--json", action="store_true", help="Imprime o payload completo como JSON.")
 
     subparsers.add_parser("actions", aliases=["acoes"], help="Lista as automacoes disponiveis.")
-    subparsers.add_parser("serve", aliases=["api"], help="Inicia a API local usada pelo dashboard.")
+    serve = subparsers.add_parser("serve", aliases=["api"], help="Inicia a API local usada pelo dashboard.")
+    serve.add_argument("--port", type=_port_number, default=dashboard_api.PORT, help="Porta local (0 escolhe uma porta livre).")
+    serve.add_argument("--no-browser", action="store_true", help="Não abre o navegador ao iniciar.")
     subparsers.add_parser("debug", aliases=["depurar"], help="Mostra um diagnóstico local sem revelar chaves.")
     deliveries = subparsers.add_parser(
         "deadlines",
@@ -179,7 +188,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         print(json.dumps(data, ensure_ascii=False, indent=2))
         return 0
     if args.command in {"serve", "api"}:
-        dashboard_api.main()
+        dashboard_api.main(port=args.port, open_browser=not args.no_browser)
         return 0
     if args.command in {"debug", "depurar"}:
         _print_debug()

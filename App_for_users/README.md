@@ -21,13 +21,23 @@ Gere o ZIP do código, os instaladores de fonte e o executável do sistema atual
     python3 -m pip install -r requirements-build.txt
     python3 preparos/build_executable.py
 
+### Aplicativo desktop Electron
+
+O app Electron abre a interface em uma janela própria e inclui o backend Python; não precisa de navegador nem de Python instalado na máquina do aluno. Baixe os instaladores Windows e Linux na [página de releases](https://github.com/SamuelMatos78/canvas-companion/releases). O Windows usa instalador NSIS e o Linux usa AppImage.
+
+Para compilar localmente, instale Node.js 22 ou superior, instale as dependências de build Python acima e execute `npm install` dentro de `desktop/`. Depois rode `npm run dist:win` no Windows ou `npm run dist:linux` no Linux. O pacote fica em `desktop/release/`.
+
+O atualizador verifica releases ao iniciar e a cada seis horas. Quando encontra uma versão nova, pergunta se deve baixar; depois do download, permite reiniciar para instalar ou aplicar a atualização ao fechar o app. O GitHub Actions publica o instalador e os metadados de atualização quando uma tag `v*` é enviada. A versão em `desktop/package.json` deve corresponder à tag, por exemplo `0.5.2` com `v0.5.2`. Como a release compartilhada é a `v0.5.0`, esta é a primeira versão Electron, `v0.5.1`.
+
+O executável standalone PyInstaller e os instaladores baseados em fonte descritos abaixo continuam disponíveis como alternativas. Builds antigos do PyInstaller não contêm o atualizador Electron; é necessário instalar manualmente o primeiro instalador Electron da página de releases para receber as próximas atualizações dentro do app.
+
 Envie `dist/canvas-companion-source.zip` ao Google Drive e configure o compartilhamento como “qualquer pessoa com o link”. Depois gere os instaladores já configurados com esse endereço:
 
     python3 preparos/empacotar_fonte.py --source-url "https://drive.google.com/file/d/ID_DO_ARQUIVO/view"
 
 Publique `dist/canvas-companion-windows-installer.zip` e `dist/canvas-companion-linux-install.sh` no portfólio. O pacote Windows contém `install.cmd` e `install.ps1`; o aluno extrai o ZIP e dá dois cliques em `install.cmd`. O Linux recebe um único script. Com `--source-url`, os alunos não precisam abrir o Drive nem copiar o link; sem ele, o instalador pergunta o endereço.
 
-O build independente gera `dist/executables/Canvas-Companion` no Linux ou `dist/executables/Canvas-Companion.exe` no Windows. Ele inclui o runtime Python e não exige instalação de Python no computador do aluno. Compile cada formato no sistema correspondente. O workflow `.github/workflows/build-executables.yml` cria os dois artefatos em runners Linux e Windows quando executado em um repositório GitHub.
+O build independente gera `dist/executables/Canvas-Companion` no Linux ou `dist/executables/Canvas-Companion.exe` no Windows. Ele inclui o runtime Python e não exige instalação de Python no computador do aluno. Compile cada formato no sistema correspondente.
 
 ### Pedir a um amigo para compilar o `.exe` no Windows
 
@@ -43,7 +53,7 @@ py -3.12 -m venv .venv
 
 O executável ficará em `dist\executables\Canvas-Companion.exe`. Para compilar a versão Windows, ele deve fazer o build no próprio Windows. O ZIP de fonte já contém todos os arquivos necessários para esse build manual; a pasta `.github` não precisa ser enviada.
 
-O empacotador inclui somente os arquivos de código necessários, a interface e os instaladores. Ele deixa de fora caches e arquivos baixados do Canvas, chaves, configurações locais, respostas produzidas, ambientes virtuais e dependências web.
+O empacotador inclui somente os arquivos de código necessários, a interface, os arquivos Electron e os instaladores. Ele deixa de fora caches e arquivos baixados do Canvas, chaves, configurações locais, respostas produzidas, ambientes virtuais e dependências instaladas.
 
 ## Chaves e dados pessoais
 
@@ -59,7 +69,7 @@ Cada curso recebe um prazo local de seis meses a partir da primeira sincronizaç
 
 ## Instalação
 
-O executável standalone não exige instalação de Python nem privilégios de administrador. Os instaladores baseados em código-fonte continuam disponíveis como alternativa; eles requerem Python 3.10 ou superior e internet durante a primeira instalação e criam um ambiente privado do usuário.
+Os instaladores Electron não exigem instalação de Python nem privilégios de administrador. Ao fechar a janela, o app encerra também o processo local e libera a porta. Os instaladores baseados em código-fonte continuam disponíveis como alternativa; eles requerem Python 3.10 ou superior e internet durante a primeira instalação e criam um ambiente privado do usuário.
 
 Windows: deixe `install.cmd` e `install.ps1` juntos na mesma pasta e dê dois cliques em `install.cmd`. Se o instalador pedir, cole o link público do ZIP no Drive.
 

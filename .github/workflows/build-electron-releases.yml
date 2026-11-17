@@ -1,0 +1,66 @@
+name: Build Electron releases
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check tag and app version
+        run: |
+          APP_VERSION="$(node -p "require('./desktop/package.json').version")"
+          test "${GITHUB_REF_NAME}" = "v${APP_VERSION}"
+      - name: Install Python build dependencies
+        run: python -m pip install -r requirements-build.txt
+      - name: Build bundled Python backend
+        run: python preparos/build_executable.py
+      - name: Install Electron dependencies
+        working-directory: desktop
+        run: npm install --no-audit --no-fund
+      - name: Build and publish Linux AppImage
+        working-directory: desktop
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx electron-builder --linux AppImage --publish always
+
+  windows:
+    needs: linux
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check tag and app version
+        shell: bash
+        run: |
+          APP_VERSION="$(node -p "require('./desktop/package.json').version")"
+          test "${GITHUB_REF_NAME}" = "v${APP_VERSION}"
+      - name: Install Python build dependencies
+        run: python -m pip install -r requirements-build.txt
+      - name: Build bundled Python backend
+        run: python preparos/build_executable.py
+      - name: Install Electron dependencies
+        working-directory: desktop
+        run: npm install --no-audit --no-fund
+      - name: Build and publish Windows installer
+        working-directory: desktop
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx electron-builder --win nsis --publish always

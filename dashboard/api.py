@@ -2066,19 +2066,20 @@ class DashboardHandler(BaseHTTPRequestHandler):
         return
 
 
-def main() -> None:
+def main(port: int = PORT, open_browser: bool = True) -> None:
     try:
-        server = ThreadingHTTPServer((HOST, PORT), DashboardHandler)
+        server = ThreadingHTTPServer((HOST, port), DashboardHandler)
     except OSError as exc:
-        if exc.errno != errno.EADDRINUSE:
+        if exc.errno != errno.EADDRINUSE or port == 0:
             raise
         server = ThreadingHTTPServer((HOST, 0), DashboardHandler)
-        print(f"[Canvas Companion] A porta {PORT} está ocupada; usando uma porta livre.")
+        print(f"[Canvas Companion] A porta {port} está ocupada; usando uma porta livre.")
     actual_port = int(server.server_address[1])
     url = f"http://{HOST}:{actual_port}/"
-    print(f"[Canvas Companion] disponível em {url}")
-    print("[Canvas Companion] Ctrl+C para encerrar.")
-    threading.Timer(0.7, webbrowser.open, args=(url,)).start()
+    print(f"[Canvas Companion] disponível em {url}", flush=True)
+    if open_browser:
+        print("[Canvas Companion] Ctrl+C para encerrar.", flush=True)
+        threading.Timer(0.7, webbrowser.open, args=(url,)).start()
     try:
         server.serve_forever()
     except KeyboardInterrupt:

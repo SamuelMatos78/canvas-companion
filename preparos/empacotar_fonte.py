@@ -38,6 +38,11 @@ APP_FILES = (
     "installers/install.ps1",
     "installers/install.sh",
 )
+DESKTOP_FILES = (
+    "package.json",
+    "main.js",
+    "preload.js",
+)
 
 
 def add_file(archive: zipfile.ZipFile, source: Path, arcname: str) -> None:
@@ -92,6 +97,8 @@ def main() -> int:
             add_file(archive, ROOT / relative, f"canvas-companion/{relative}")
         for relative in APP_FILES:
             add_file(archive, ROOT / "App_for_users" / relative, f"canvas-companion/App_for_users/{relative}")
+        for relative in DESKTOP_FILES:
+            add_file(archive, ROOT / "desktop" / relative, f"canvas-companion/desktop/{relative}")
 
     windows_bundle = output.parent / "canvas-companion-windows-installer.zip"
     with zipfile.ZipFile(windows_bundle, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=7) as archive:
